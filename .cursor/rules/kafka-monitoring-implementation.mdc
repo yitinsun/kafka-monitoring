@@ -1,0 +1,23 @@
+---
+description: v1 Kafka monitoring stack, topics, and test contract
+globs: "{pom.xml,src/**,docker-compose.yml}"
+alwaysApply: false
+---
+
+# Implementation contract
+
+Read `.ai/greenfield/PRD.md`, `SYSTEM_DESIGN.md`, `TECH_STACK.md`, and `TESTING_PLAN.md` before changing matching files.
+
+## Stack
+
+Java 21, Spring Boot 3.3.x parent, Maven 3.9+, Spring Kafka, Actuator, Micrometer Prometheus, `starter-test`, `spring-kafka-test` **test** scope, JaCoCo line coverage ≥ 0.80. No Redis, JDBC, Flyway, Security, Schema Registry, or Kafka Streams.
+
+Event and request bodies are Java `record`s. Topic names, partition counts, and listener concurrency come from `application.yml`. Broker and replica count use `${KAFKA_BOOTSTRAP:localhost:9092}` and `${KAFKA_REPLICAS:1}`.
+
+## Domain
+
+Topic table and seed counts from `SYSTEM_DESIGN.md` (`user-status-events` 12, changelog 6 compacted, `system-metrics` 24, `system-alerts` 3, DLT topics 3). User events are keyed by `userId`. Apply only a strictly newer `version`. `PUT` returns 202. `GET` returns 200 or 404. Critical alerts use partition 0. Invalid status records are not retried.
+
+## Tests
+
+Mandatory classes and cases in `TESTING_PLAN.md`. Pipeline ITs set `app.demo.generate-metrics=false`. `mvn clean test` is the Gate 4 command.
