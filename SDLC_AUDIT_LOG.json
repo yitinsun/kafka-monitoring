@@ -47,5 +47,13 @@
     "upstream_dependency": "TECH_STACK.md",
     "upstream_dependency_hash": "fbf28ccbfdc857e501dcd195f2e06a2e8722667d6bbef6137d658e2f24e91333",
     "rationale": "Gate 6 requires the summary to match artifacts on disk. No invented coverage."
+  },
+  {
+    "timestamp": "2026-10-16T05:05:00Z",
+    "stage": "REPAIR",
+    "action_taken": "JaCoCo check reported 0.00 line coverage after mvn clean install because Surefire killed the IT JVM before the agent dumped jacoco.exec. Surefire now keeps @{argLine} and waits 120s on exit. The IT disables the lag monitor and uses one thread per group so the context can shut down.",
+    "upstream_dependency": "TESTING_PLAN.md",
+    "upstream_dependency_hash": "ac6eb09cd7500592f47586674ddff5f9e0ada2b8c904ea0f90dbeafca8b04f51",
+    "rationale": "Tests were already green. The 0.00 ratio was a missing execution file, not a coverage-bar change. Follow-up mvn clean test: 190/205 lines (92.68%), check passed."
   }
 ]

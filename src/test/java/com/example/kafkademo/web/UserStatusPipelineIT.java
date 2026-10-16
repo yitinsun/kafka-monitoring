@@ -18,16 +18,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @EmbeddedKafka(partitions = 1, bootstrapServersProperty = "spring.kafka.bootstrap-servers")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(properties = {
         "app.demo.generate-metrics=false",
+        "app.monitoring.lag-enabled=false",
         "spring.task.scheduling.enabled=false",
-        "spring.kafka.listener.missing-topics-fatal=false"
+        "spring.kafka.listener.missing-topics-fatal=false",
+        "app.kafka.groups.user-status-processor.concurrency=1",
+        "app.kafka.groups.user-status-audit.concurrency=1",
+        "app.kafka.groups.metrics-aggregator.concurrency=1",
+        "app.kafka.groups.metrics-alerting.concurrency=1",
+        "app.kafka.groups.alert-notifier.concurrency=1"
 })
 class UserStatusPipelineIT {
 

@@ -14,6 +14,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
  * Publishes app.kafka.group.lag{group=...} as the sum over partitions of (log end offset - committed offset).
  */
 @Component
+@ConditionalOnProperty(name = "app.monitoring.lag-enabled", havingValue = "true", matchIfMissing = true)
 public class ConsumerLagMonitor {
 
     private static final Logger log = LoggerFactory.getLogger(ConsumerLagMonitor.class);
