@@ -36,8 +36,9 @@ Mock `MetricsAggregator` and `AlertPublisher`.
 | Case | Setup | Expect |
 |:-----|:------|:-------|
 | Under threshold | `cpu.usage` 0.5, `latency.p99.ms` 100 | no alert |
-| CPU breach | `cpu.usage` 0.95 | one `WARNING` (`0.95 <= 0.90 * 1.2`) |
-| CPU critical | `cpu.usage` 1.0, or any value `> 1.08` | one `CRITICAL` |
+| CPU breach | `cpu.usage` 0.95 | one `WARNING` (`0.95 > 0.90` and `0.95 <= 1.08`) |
+| CPU at 1.0 | `cpu.usage` 1.0 | one `WARNING` (`1.0 > 0.90` and `1.0` is not above `0.90 * 1.2`) |
+| CPU critical | `cpu.usage` 1.09 | one `CRITICAL` (`1.09 > 1.08`) |
 | Latency breach | `latency.p99.ms` 1001 | one alert |
 | Unknown metric | name `disk.used` at a high value | no alert |
 | Cooldown | two breaches for the same instance and metric inside 30 seconds | one `publish` |

@@ -1,0 +1,13 @@
+{
+  "success_rate": {
+    "compiled_ok": 0,
+    "syntax_failures": 0
+  },
+  "retry_rollback_frequency": 0,
+  "mttr_ms": null,
+  "stage1_epoch_ms": null,
+  "stage7_epoch_ms": null,
+  "end_to_end_latency_ms": null,
+  "updated_at": "2026-10-16T01:43:00Z",
+  "notes": "No compile or mvn test in this loop. The only change aligned TESTING_PLAN.md CPU severity rows with PRD.md. Coverage is unmeasured."
+}

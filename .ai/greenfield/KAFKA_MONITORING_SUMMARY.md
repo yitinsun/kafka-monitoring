@@ -7,7 +7,7 @@
 | Lifecycle | Stages 1–2 documents written from `.notes/overview.docx`, `.notes/ABOUTME.md`, `.notes/application.yml`, and `.notes/kafka-demo.zip`. **Gate 2 is not approved.** `GATE2_APPROVAL.txt` is absent. Stages 3–7 have not run. |
 | Java / `pom.xml` / tests | **Not in this workspace.** The reference module is inside `.notes/kafka-demo.zip` only. |
 | `docker-compose.yml` | **Not in this workspace.** The zip contains a broker-only compose file. |
-| `SDLC_AUDIT_LOG.json` / `SDLC_METRICS.json` | **Not written.** `stage1_epoch_ms`, `stage7_epoch_ms`, and `end_to_end_latency_ms` are unset. |
+| `SDLC_AUDIT_LOG.json` / `SDLC_METRICS.json` | Written. One `TESTING` entry aligns the CPU severity rows with `PRD.md`. No compile yet. `stage1_epoch_ms`, `stage7_epoch_ms`, and `end_to_end_latency_ms` remain unset. |
 | Measured coverage | **None.** Do not cite a percentage until `target/site/jacoco/jacoco.csv` exists after `mvn test`. |
 
 ## 2. Plan & Engineering Rationale

@@ -1,0 +1,10 @@
+[
+  {
+    "timestamp": "2026-10-16T01:43:00Z",
+    "stage": "TESTING",
+    "action_taken": "Split the MetricsListenersTest CPU severity rows in TESTING_PLAN.md so cpu.usage 1.0 expects WARNING and 1.09 expects CRITICAL.",
+    "upstream_dependency": "PRD.md",
+    "upstream_dependency_hash": "79be17d3f6c5af9650545cd5ae3533ca8008648f628c1198657f76d1338f5115",
+    "rationale": "PRD.md marks CRITICAL only when value > threshold * 1.2. For cpu.usage the cutoff is 1.08, so 1.0 is WARNING."
+  }
+]
