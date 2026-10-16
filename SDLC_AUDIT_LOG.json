@@ -7,4 +7,45 @@
     "upstream_dependency_hash": "79be17d3f6c5af9650545cd5ae3533ca8008648f628c1198657f76d1338f5115",
     "rationale": "PRD.md marks CRITICAL only when value > threshold * 1.2. For cpu.usage the cutoff is 1.08, so 1.0 is WARNING."
   }
+,
+  {
+    "timestamp": "2026-10-16T01:55:00Z",
+    "stage": "IMPLEMENTATION",
+    "action_taken": "Stage 3A–3C: pom.xml, application.yml, KafkaTopicConfig, user-status path, metrics/alerts/lag path, docker-compose.yml. Package com.example.kafkademo.",
+    "upstream_dependency": "SYSTEM_DESIGN.md",
+    "upstream_dependency_hash": "9dfd8b73780915364d6d31d86df27dcda6806bddcd8852047173d1118a58b487",
+    "rationale": "Gate 2 file [APPROVED: yitin] unlocked the topic catalog, user-status pipeline, and metrics/alert pipeline together."
+  },
+  {
+    "timestamp": "2026-10-16T01:58:16Z",
+    "stage": "REPAIR",
+    "action_taken": "Renamed UserStatusPipelineIT helper put() to changeStatus() after testCompile failed against the static MockMvc put import.",
+    "upstream_dependency": "TESTING_PLAN.md",
+    "upstream_dependency_hash": "ac6eb09cd7500592f47586674ddff5f9e0ada2b8c904ea0f90dbeafca8b04f51",
+    "rationale": "Gate 4 compile failure. Repair 1 of 3. Did not disable the test."
+  },
+  {
+    "timestamp": "2026-10-16T02:00:00Z",
+    "stage": "REPAIR",
+    "action_taken": "KafkaTopicConfigTest reads KafkaAdmin.NewTopics.newTopics as a Collection, not a NewTopic array.",
+    "upstream_dependency": "TESTING_PLAN.md",
+    "upstream_dependency_hash": "ac6eb09cd7500592f47586674ddff5f9e0ada2b8c904ea0f90dbeafca8b04f51",
+    "rationale": "Gate 4 test error (ClassCastException). Repair 2 of 3."
+  },
+  {
+    "timestamp": "2026-10-16T02:02:06Z",
+    "stage": "TESTING",
+    "action_taken": "mvn clean test on JDK 21 succeeded: 30 tests, 0 failures. JaCoCo 190/205 lines (92.68%). Check minimum 0.80 passed.",
+    "upstream_dependency": "TESTING_PLAN.md",
+    "upstream_dependency_hash": "ac6eb09cd7500592f47586674ddff5f9e0ada2b8c904ea0f90dbeafca8b04f51",
+    "rationale": "Gate 4A and 4B. Compose was not started."
+  },
+  {
+    "timestamp": "2026-10-16T02:02:06Z",
+    "stage": "RELEASE",
+    "action_taken": "Updated KAFKA_MONITORING_SUMMARY.md with the measured test and coverage results. docker-compose.yml is present and was not executed.",
+    "upstream_dependency": "TECH_STACK.md",
+    "upstream_dependency_hash": "fbf28ccbfdc857e501dcd195f2e06a2e8722667d6bbef6137d658e2f24e91333",
+    "rationale": "Gate 6 requires the summary to match artifacts on disk. No invented coverage."
+  }
 ]

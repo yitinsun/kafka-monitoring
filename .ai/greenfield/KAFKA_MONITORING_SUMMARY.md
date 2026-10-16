@@ -4,11 +4,11 @@
 
 | Item | State |
 |:-----|:------|
-| Lifecycle | Stages 1–2 documents written from `.notes/overview.docx`, `.notes/ABOUTME.md`, `.notes/application.yml`, and `.notes/kafka-demo.zip`. **Gate 2 is not approved.** `GATE2_APPROVAL.txt` is absent. Stages 3–7 have not run. |
-| Java / `pom.xml` / tests | **Not in this workspace.** The reference module is inside `.notes/kafka-demo.zip` only. |
-| `docker-compose.yml` | **Not in this workspace.** The zip contains a broker-only compose file. |
-| `SDLC_AUDIT_LOG.json` / `SDLC_METRICS.json` | Written. One `TESTING` entry aligns the CPU severity rows with `PRD.md`. No compile yet. `stage1_epoch_ms`, `stage7_epoch_ms`, and `end_to_end_latency_ms` remain unset. |
-| Measured coverage | **None.** Do not cite a percentage until `target/site/jacoco/jacoco.csv` exists after `mvn test`. |
+| Lifecycle | Gate 2 approved (`GATE2_APPROVAL.txt` = `[APPROVED: yitin]`). Stages 3–5 complete. Stage 6 compose file is present; **compose was not started**. Stage 7 summary matches this run. |
+| Java / `pom.xml` / tests | Present. `mvn clean test` green on JDK 21 (`C:\Program Files\Java\jdk-21.0.12.1`): **30 tests, 0 failures**. |
+| `docker-compose.yml` | Present (broker only, `apache/kafka:3.8.0`, port 9092). Not executed. |
+| `SDLC_AUDIT_LOG.json` / `SDLC_METRICS.json` | Written. `stage1_epoch_ms` is the first audit timestamp. `stage7_epoch_ms` is the successful `mvn clean test` finish (`2026-10-15T21:02:06-05:00`). |
+| Measured coverage | **190 / 205 lines (92.68%)** from `target/site/jacoco/jacoco.csv`. JaCoCo check ≥ 80% passed. |
 
 ## 2. Plan & Engineering Rationale
 
@@ -26,18 +26,18 @@
 
 | Artifact | Present in this workspace? |
 |:---------|:---------------------------|
-| `GATE2_APPROVAL.txt` | No |
+| `GATE2_APPROVAL.txt` | Yes (`[APPROVED: yitin]`) |
 | `.ai/greenfield/` PRD, design, stack, tests, manifest, instructions | Yes |
 | `.ai/greenfield/ORCHESTRATION_ARCHITECTURE.md` | Yes |
 | `.ai/greenfield/KAFKA_MONITORING_SUMMARY.md` | Yes (this file) |
 | `.ai/scenarios/{GREENFIELD,BROWNFIELD,AMBIGUOUS}.md` | Yes |
 | `.ai/brownfield/` playbooks | No playbook yet |
 | `AGENTS.md` | Yes |
-| `README.md` | Yes (run steps; module not built here) |
+| `README.md` | Yes (run steps; module is in this workspace) |
 | `.notes/overview.docx`, `ABOUTME.md`, `application.yml`, `kafka-demo.zip` | Yes (inputs, not the Stage 3 tree) |
-| `pom.xml`, `src/**` | No |
-| `docker-compose.yml` | No |
-| JaCoCo report | No |
+| `pom.xml`, `src/**` | Yes |
+| `docker-compose.yml` | Yes (not executed) |
+| JaCoCo report | Yes (`target/site/jacoco/jacoco.csv` after `mvn clean test`) |
 
 ## 4. Risks, Trade-offs, & Validation
 
@@ -45,7 +45,8 @@
 * Sequential per-user ordering holds only while the partition count stays 12. Increasing it is a re-plan.
 * Demo metric generation is on by default and will publish about 40 samples per second once the app and broker are up.
 * Single Kafka node in compose. Replica default is 1 so that node can form a cluster of one.
-* **Validation:** not run. `mvn test` and `docker compose up` are not claimed.
+* Default `JAVA_HOME` on this machine is JDK 8. The green run used `C:\Program Files\Java\jdk-21.0.12.1`.
+* **Validation:** `mvn clean test` passed (30 tests, JaCoCo 190/205 lines, 92.68%). Two repairs before that green run: a test helper named `put` collided with MockMvc's static `put`, then `KafkaAdmin.NewTopics` stores a `Collection` rather than a `NewTopic[]`. Docker Compose was not started.
 
 ## 5. Assumptions & Limitations
 
@@ -63,11 +64,11 @@
 | New `pom` dependency / topic / partition count | Halt | Signature file |
 | Coverage bar &lt; 80% or `@Disabled` | Forbidden | — |
 | Merge / release | — | Operator |
-| Start Stage 3 | Halt until `GATE2_APPROVAL.txt` | Write `[APPROVED: …]` |
+| Start Stage 3 | Done under `[APPROVED: yitin]` | Signature file already present |
 
 ## 7. Lineage (how to read the audit log)
 
-`SDLC_AUDIT_LOG.json` does not exist yet. When implementation starts it is append-only. Grep `Gate 2` / `GATE2` for the approval that unlocks `src/**`. Grep `REPAIR` for test-loop fixes. New entries carry the SHA-256 of the governing markdown.
+`SDLC_AUDIT_LOG.json` is append-only. Grep `REPAIR` for the two Gate 4 fixes (MockMvc `put` name clash, `NewTopics` collection cast). New entries carry the SHA-256 of the governing markdown.
 
 A PRD or topic-catalog change after Gate 2 invalidates downstream hashes and requires a re-plan plus a new human signature for high-impact items.
 

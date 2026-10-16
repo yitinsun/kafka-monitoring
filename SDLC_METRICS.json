@@ -1,13 +1,13 @@
 {
   "success_rate": {
-    "compiled_ok": 0,
-    "syntax_failures": 0
+    "compiled_ok": 2,
+    "syntax_failures": 1
   },
-  "retry_rollback_frequency": 0,
-  "mttr_ms": null,
-  "stage1_epoch_ms": null,
-  "stage7_epoch_ms": null,
-  "end_to_end_latency_ms": null,
-  "updated_at": "2026-10-16T01:43:00Z",
-  "notes": "No compile or mvn test in this loop. The only change aligned TESTING_PLAN.md CPU severity rows with PRD.md. Coverage is unmeasured."
+  "retry_rollback_frequency": 2,
+  "mttr_ms": 230000,
+  "stage1_epoch_ms": 1792114980000,
+  "stage7_epoch_ms": 1792116126000,
+  "end_to_end_latency_ms": 1146000,
+  "updated_at": "2026-10-16T02:02:06Z",
+  "notes": "syntax_failures=1 was UserStatusPipelineIT helper put() colliding with MockMvc's static put. compiled_ok=2 is the testCompile after that rename and the final mvn clean test. retry_rollback_frequency=2 includes that compile repair and the KafkaAdmin.NewTopics Collection cast. mttr_ms is 20:58:16-05:00 (first BUILD FAILURE) to 21:02:06-05:00 (BUILD SUCCESS). Coverage from target/site/jacoco/jacoco.csv: 190/205 lines (92.68%). stage1_epoch_ms is the first audit timestamp 2026-10-16T01:43:00Z. stage7_epoch_ms is the green Maven finish. docker compose up was not run."
 }

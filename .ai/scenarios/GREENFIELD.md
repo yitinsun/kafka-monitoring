@@ -1,6 +1,6 @@
 # Greenfield scenario
 
-**Intent:** build the Kafka monitoring service from specs. This workspace has no Java module yet. Behavior is defined by `.notes/overview.docx` and the reference project in `.notes/kafka-demo.zip`.
+**Intent:** build the Kafka monitoring service from specs. Behavior is defined by `.notes/overview.docx` and the reference project in `.notes/kafka-demo.zip`. The Java module is now in this workspace.
 
 **Decomposition**
 
@@ -12,7 +12,7 @@
    - **3C** metrics publisher, alerting, alert partition pin, lag and e2e gauges
 4. Tests / compliance (Gate 4): `mvn test`, JaCoCo ≥ 80%, concurrency and partition counts only from configuration.
 
-**Orchestration path:** Stages 1→2→HITL→3A/3B/3C→4. No repair loop has run.
+**Orchestration path:** Stages 1→2→HITL→3A/3B/3C→4. Two repairs, then a green `mvn clean test`.
 
 **Validation:** `UserStatusStoreTest`, `AlertPublisherTest`, `MetricsListenersTest`, `UserStatusListenersTest`, `UserStatusControllerTest`, `UserStatusPipelineIT`. Command: `mvn test` on JDK 21.
 

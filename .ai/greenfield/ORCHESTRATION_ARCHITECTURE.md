@@ -35,7 +35,7 @@ upstream spec change ──► re-plan at Stage 1 (audit log kept)
 | 5 | Broker compose | `docker-compose.yml` starts Kafka on 9092. The app is `mvn spring-boot:run` on 8080. |
 | 6 | Honest summary | `.ai/greenfield/KAFKA_MONITORING_SUMMARY.md` |
 
-Stage 3 is specified to run **in parallel** (3A catalog, 3B user status, 3C metrics and alerts) then sync. That implementation has **not** been generated in this workspace. The behavioral reference is `.notes/kafka-demo.zip`.
+Stage 3 is in the workspace: 3A catalog, 3B user status, and 3C metrics and alerts. The behavioral reference remains `.notes/kafka-demo.zip`.
 
 ## Lineage
 
@@ -58,7 +58,7 @@ High-impact: topic or partition changes after Gate 2, undeclared `pom` deps, low
 
 ## Bounded repair
 
-Max **3** test-repair loops, then Safe-Stop (freeze writes, do not start Stage 6). No repair loop has run in this workspace.
+Max **3** test-repair loops, then Safe-Stop (freeze writes, do not start Stage 6). This run used **two**: a MockMvc `put` name clash, then a `NewTopics` collection cast. The third `mvn clean test` was green.
 
 ## Re-plan example (brownfield)
 
@@ -66,4 +66,4 @@ Max **3** test-repair loops, then Safe-Stop (freeze writes, do not start Stage 6
 
 ## Metrics
 
-`SDLC_METRICS.json`: compile success vs syntax failure, `retry_rollback_frequency`, `mttr_ms`, stage timestamps, coverage notes. Stage 7 end-to-end latency stays **unset** until a recorded release pass. Neither file exists until Stage 3 starts.
+`SDLC_METRICS.json`: compile success vs syntax failure, `retry_rollback_frequency` 2, `mttr_ms` 230000 (20:58:16 to 21:02:06, local), coverage 190/205. `stage7_epoch_ms` is that green Maven finish. Compose up was not run.

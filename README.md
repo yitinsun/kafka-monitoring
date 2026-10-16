@@ -4,7 +4,7 @@ Gated SDLC workspace for a Spring Boot **Kafka monitoring** service (Java 21, si
 
 Agents follow `.ai/greenfield/` (build from spec) and `.ai/brownfield/` (later small fixes). The running process is ordinary Spring Boot: no LLM inside the JAR.
 
-The Java module is not in this repo yet. Gate 2 (`GATE2_APPROVAL.txt`) has to be approved before `src/**` or `pom.xml` are generated. Until then, the coding reference is `.notes/kafka-demo.zip`.
+Gate 2 is approved (`GATE2_APPROVAL.txt` = `[APPROVED: yitin]`). The Spring Boot module is `com.example:kafka-demo`. On this machine `JAVA_HOME` may still point at JDK 8; Maven needs JDK 21 (`C:\Program Files\Java\jdk-21.0.12.1`).
 
 ## Requirements
 
@@ -18,7 +18,7 @@ The Java module is not in this repo yet. Gate 2 (`GATE2_APPROVAL.txt`) has to be
 mvn test
 ```
 
-JaCoCo fails the build if line coverage is below **80%**. Do not use `@Disabled` / `@Ignore`. The suite is specified in `.ai/greenfield/TESTING_PLAN.md` and has not been run here.
+JaCoCo fails the build if line coverage is below **80%**. Do not use `@Disabled` / `@Ignore`. Last green run: `mvn clean test` on JDK 21, 30 tests, **190 / 205 lines (92.68%)**.
 
 ## Run
 
