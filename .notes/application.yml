@@ -1,0 +1,82 @@
+spring:
+  application.name: kafka-demo
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      acks: all
+      compression-type: lz4
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable.idempotence: true
+        linger.ms: 10          # small batching window -> better throughput for metrics
+        batch.size: 65536
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500
+      # ErrorHandlingDeserializer: a poison-pill message goes to the error handler/DLT instead of looping forever
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: com.example.kafkademo.model
+        partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+        session.timeout.ms: 15000
+
+app:
+  demo:
+    generate-metrics: true
+  kafka:
+    # ---- TOPICS: partition count is the upper bound of parallelism for any group reading the topic ----
+    topics:
+      user-status:            # keyed by userId -> per-user ordering; moderate volume, many users
+        name: user-status-events
+        partitions: 12
+        replicas: ${KAFKA_REPLICAS:1}      # use 3 in production
+        retention-ms: 604800000            # 7 days
+      user-status-changelog:  # compacted: always holds the latest status per user
+        name: user-status-changelog
+        partitions: 6
+        replicas: ${KAFKA_REPLICAS:1}
+        compacted: true
+      metrics:                # highest volume -> most partitions
+        name: system-metrics
+        partitions: 24
+        replicas: ${KAFKA_REPLICAS:1}
+        retention-ms: 86400000             # 1 day
+      alerts:                 # low volume; partition 0 reserved for CRITICAL
+        name: system-alerts
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+        retention-ms: 604800000
+      user-status-dlt:
+        name: user-status-events.DLT
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+      metrics-dlt:
+        name: system-metrics.DLT
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+    # ---- GROUPS: concurrency = consumer threads per app instance ----
+    # Effective consumers in a group = min(concurrency * instances, partitions). Extra ones sit idle.
+    groups:
+      user-status-processor:  # 12 partitions / 6 threads = 2 partitions per thread; room to scale to 2 instances
+        group-id: user-status-processor
+        concurrency: 6
+      user-status-audit:      # cheap, append-only work
+        group-id: user-status-audit
+        concurrency: 3
+      metrics-aggregator:     # 24 partitions / 12 threads (batch listener)
+        group-id: metrics-aggregator
+        concurrency: 12
+      metrics-alerting:
+        group-id: metrics-alerting
+        concurrency: 4
+      alert-notifier:         # 3 partitions -> 3 threads is the max useful value
+        group-id: alert-notifier
+        concurrency: 3
+
+management:
+  endpoints.web.exposure.include: health,metrics,prometheus

@@ -1,0 +1,24 @@
+---
+description: Gated SDLC — Gate 2 lock, stages, audit, high-impact stops
+alwaysApply: true
+---
+
+# Lifecycle governance
+
+Follow `AGENTS.md` and `.ai/greenfield/INSTRUCTIONS.md` + `ORCHESTRATION_MANIFEST.md` on every chat.
+
+## Gate 2
+
+If `GATE2_APPROVAL.txt` is missing or lacks `[APPROVED: …]`, do not create/edit `pom.xml` or `src/**`. Refuse and ask for approval. Docs, Docker compose, and this rule may be edited.
+
+## Stages
+
+Implement only the current stage. Do not skip Gate 3 (topic catalog + user status + metrics/alerts) before `mvn clean test`. On test failure: fix code, never `@Disabled`/`@Ignore`, max 3 retries, then stop (do not start Stage 6).
+
+## Lineage
+
+Append `SDLC_AUDIT_LOG.json` and update `SDLC_METRICS.json` per `INSTRUCTIONS.md`. Do not invent coverage or “generated” files in `KAFKA_MONITORING_SUMMARY.md`.
+
+## High impact — halt
+
+Changing topics or partition counts after Gate 2, adding undeclared `pom.xml` dependencies, or dropping the 80% / mandatory test bar requires a new human signature. Re-plan to Stage 1 if `PRD.md` or design changes mid-run.
