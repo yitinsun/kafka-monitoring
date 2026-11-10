@@ -1,0 +1,78 @@
+spring:
+  application.name: kafka-demo
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      acks: all
+      compression-type: lz4
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable.idempotence: true
+        linger.ms: 10
+        batch.size: 65536
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: com.example.kafkademo.model
+        partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+        session.timeout.ms: 15000
+
+app:
+  demo:
+    generate-metrics: true
+  kafka:
+    topics:
+      user-status:
+        name: user-status-events
+        partitions: 12
+        replicas: ${KAFKA_REPLICAS:1}
+        retention-ms: 604800000
+      user-status-changelog:
+        name: user-status-changelog
+        partitions: 6
+        replicas: ${KAFKA_REPLICAS:1}
+        compacted: true
+      metrics:
+        name: system-metrics
+        partitions: 24
+        replicas: ${KAFKA_REPLICAS:1}
+        retention-ms: 86400000
+      alerts:
+        name: system-alerts
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+        retention-ms: 604800000
+      user-status-dlt:
+        name: user-status-events.DLT
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+      metrics-dlt:
+        name: system-metrics.DLT
+        partitions: 3
+        replicas: ${KAFKA_REPLICAS:1}
+    groups:
+      user-status-processor:
+        group-id: user-status-processor
+        concurrency: 6
+      user-status-audit:
+        group-id: user-status-audit
+        concurrency: 3
+      metrics-aggregator:
+        group-id: metrics-aggregator
+        concurrency: 12
+      metrics-alerting:
+        group-id: metrics-alerting
+        concurrency: 4
+      alert-notifier:
+        group-id: alert-notifier
+        concurrency: 3
+
+management:
+  endpoints.web.exposure.include: health,metrics,prometheus
